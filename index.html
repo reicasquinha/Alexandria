@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alexandria - Portal de Alexandre</title>
+    <style>
+        /* Reset e estilos base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background-color: #000;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* Barra de navegação */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to right, rgba(0, 0, 0, 0.7), rgba(25, 25, 25, 0.7), rgba(0, 0, 0, 0.7));
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            height: 65px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.5s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        nav:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(to right,
+                    transparent 0%,
+                    rgba(255, 255, 255, 0.1) 20%,
+                    rgba(255, 255, 255, 0.3) 50%,
+                    rgba(255, 255, 255, 0.1) 80%,
+                    transparent 100%);
+        }
+
+        .nav-container {
+            width: 90%;
+            max-width: 1200px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s ease;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+        }
+
+        .logo:hover {
+            color: #2997ff;
+            text-shadow: 0 0 15px rgba(41, 151, 255, 0.4);
+            transform: scale(1.05);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-link {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 400;
+            position: relative;
+            padding: 5px 0;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #2997ff;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(to right, #2997ff, #5ac8fa);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* Slideshow de fundo */
+        .slideshow-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            filter: blur(12px) brightness(0.35);
+            overflow: hidden;
+        }
+
+        .slideshow-background img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 110%;
+            /* Ligeiramente maior para evitar bordas durante o zoom */
+            height: 110%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 2.5s cubic-bezier(0.4, 0.0, 0.2, 1), transform 8s ease-in-out;
+            transform: scale(1.05);
+            transform-origin: center center;
+            will-change: opacity, transform;
+        }
+
+        .slideshow-background img.active {
+            opacity: 1;
+            animation: slowZoom 8s cubic-bezier(0.1, 0.7, 0.6, 1) forwards;
+        }
+
+        @keyframes slowZoom {
+            0% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1.15);
+            }
+        }
+
+        .slideshow-background::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.4) 70%);
+            pointer-events: none;
+        }
+
+        /* Hero section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            padding-top: 60px;
+        }
+
+        .hero-title-container {
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .hero-title {
+            font-size: 4.5rem;
+            font-weight: 600;
+            background: linear-gradient(to right, #fff, #f5f5f7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 20px;
+            position: relative;
+            display: inline-block;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+            letter-spacing: 2px;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transform: perspective(500px) rotateX(5deg);
+            transform-origin: center bottom;
+        }
+
+        .hero-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+        }
+
+        @keyframes titleAnimation {
+            0% {
+                transform: translateY(50px) translateZ(-100px) rotateX(30deg);
+                opacity: 0;
+            }
+
+            100% {
+                transform: translateY(0) translateZ(0) rotateX(0);
+            }
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            font-weight: 300;
+            margin-bottom: 40px;
+            max-width: 800px;
+            opacity: 0;
+            animation: fadeIn 1s ease-in-out forwards;
+            animation-delay: 1s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Botões */
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .cta-button {
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-width: 200px;
+        }
+
+        .cta-button-primary {
+            background: linear-gradient(to right, #2997ff, #5ac8fa);
+            color: #fff;
+            border: none;
+        }
+
+        .cta-button-primary-roxo {
+            background: linear-gradient(to right, #9932cc, #8a2be2);
+            color: #fff;
+            border: none;
+        }
+
+
+        .cta-button-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .cta-button-primary:hover {
+            background: linear-gradient(to right, #1d87e4, #47b8f5);
+        }
+
+        .cta-button-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+            transform: scale(0);
+            transition: transform 0.5s ease-out;
+        }
+
+        .cta-button:hover::before {
+            transform: scale(1);
+        }
+
+        /* Seções */
+        .section {
+            padding: 100px 5%;
+            position: relative;
+        }
+
+        .section-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 50px;
+            text-align: center;
+            background: linear-gradient(to right, #fff, #f5f5f7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(to right, #2997ff, #5ac8fa);
+        }
+
+        /* Discord Section */
+        .discord-section {
+            background: linear-gradient(to bottom, #000, #0a0a0a, #000);
+        }
+
+        .discord-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .discord-info {
+            text-align: center;
+            max-width: 800px;
+        }
+
+        .discord-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #5865F2;
+        }
+
+        .discord-description {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .discord-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            width: 100%;
+        }
+
+        .discord-feature {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .discord-feature:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .discord-feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #5865F2;
+        }
+
+        .discord-feature-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .discord-feature-description {
+            font-size: 1rem;
+            line-height: 1.5;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Minecraft Section */
+        .minecraft-section {
+            background: linear-gradient(to bottom, #000, #0a0a0a, #000);
+        }
+
+        .minecraft-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .minecraft-info {
+            text-align: center;
+            max-width: 800px;
+        }
+
+        .minecraft-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #62B47A;
+        }
+
+        .minecraft-description {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .minecraft-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            width: 100%;
+        }
+
+        .minecraft-feature {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .minecraft-feature:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .minecraft-feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #62B47A;
+        }
+
+        .minecraft-feature-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .minecraft-feature-description {
+            font-size: 1rem;
+            line-height: 1.5;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Steam Section */
+        .steam-section {
+            background: linear-gradient(to bottom, #000, #0a0a0a, #000);
+        }
+
+        .steam-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .steam-info {
+            text-align: center;
+            max-width: 800px;
+        }
+
+        .steam-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #66c0f4;
+        }
+
+        .steam-description {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .steam-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            width: 100%;
+            margin-bottom: 40px;
+        }
+
+        .steam-stat {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .steam-stat:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .steam-stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #66c0f4, #1b2838);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .steam-stat-label {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .steam-games {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            width: 100%;
+        }
+
+        .steam-game {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .steam-game:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .steam-game-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .steam-game-info {
+            padding: 15px;
+        }
+
+        .steam-game-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .steam-game-hours {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Galeria Section */
+        .gallery-section {
+            background: linear-gradient(to bottom, #000, #0a0a0a, #000);
+            padding-bottom: 150px;
+        }
+
+        .gallery-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .gallery-tabs {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .gallery-tab {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .gallery-tab.active,
+        .gallery-tab:hover {
+            background: linear-gradient(to right, #2997ff, #5ac8fa);
+            color: #fff;
+            border-color: transparent;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            width: 100%;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            aspect-ratio: 16/9;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.03);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.5s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .gallery-item-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+            padding: 20px;
+            color: #fff;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+
+        .gallery-item:hover .gallery-item-overlay {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Modal da Galeria */
+        .gallery-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .gallery-modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .gallery-modal-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+        }
+
+        .gallery-modal-image {
+            max-width: 100%;
+            max-height: 90vh;
+            border-radius: 5px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .gallery-modal-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .gallery-modal-close:hover {
+            color: #2997ff;
+            transform: scale(1.1);
+        }
+
+        .gallery-modal-nav {
+            position: absolute;
+            bottom: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+        }
+
+        .gallery-modal-nav button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .gallery-modal-nav button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        /* Footer */
+        footer {
+            background: #0a0a0a;
+            padding: 50px 5%;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .footer-logo {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #fff, #f5f5f7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .footer-link {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .footer-link:hover {
+            color: #2997ff;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .social-icon {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-icon:hover {
+            color: #2997ff;
+            transform: translateY(-5px);
+        }
+
+        .footer-copyright {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+            margin-top: 20px;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 3rem;
+            }
+
+            .section {
+                padding: 80px 5%;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .discord-features,
+            .minecraft-features,
+            .steam-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .nav-links {
+                gap: 15px;
+            }
+
+            .nav-link {
+                font-size: 0.9rem;
+            }
+
+            .section {
+                padding: 60px 20px;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Barra de navegação -->
+    <nav>
+        <div class="nav-container">
+            <a href="#top" class="logo" id="home-button">ALEXANDRIA</a>
+            <div class="nav-links">
+                <a href="#discord" class="nav-link">Discord</a>
+                <a href="#minecraft" class="nav-link">Minecraft</a>
+                <a href="#steam" class="nav-link">Steam</a>
+                <a href="#galeria" class="nav-link">Galeria</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero section -->
+    <section class="hero">
+        <div class="slideshow-background" id="slideshow"></div>
+        <div class="hero-title-container">
+            <h1 class="hero-title">ALEXANDRIA</h1>
+        </div>
+        <p class="hero-subtitle">Portal pessoal de Alexandre com informações sobre Discord, Minecraft e Steam</p>
+        <div class="cta-buttons">
+            <a href="#discord" class="cta-button cta-button-secondary">Discord</a>
+            <a href="#minecraft" class="cta-button cta-button-secondary">Minecraft</a>
+            <a href="#steam" class="cta-button cta-button-secondary">Steam</a>
+        </div>
+    </section>
+
+    <!-- Discord Section -->
+    <section id="discord" class="section discord-section">
+        <div class="section-inner">
+            <h2 class="section-title">Discord</h2>
+            <div class="discord-container">
+                <div class="discord-info">
+                    <p class="discord-description">Junte-se ao nosso servidor de Discord para conversar, jogar e
+                        compartilhar momentos com outros membros da comunidade.</p>
+                    <a href="https://discord.gg/r8bBjkuf" target="_blank" class="cta-button cta-button-primary">Entrar
+                        no Servidor</a>
+                    &nbsp;
+                    <a href="https://discord.gg/r8bBjkuf" target="_blank" class="cta-button cta-button-secondary">Entrar
+                        no Servidor Parceiro</a>
+                </div>
+                <div class="discord-features">
+                    <div class="discord-feature">
+                        <div class="discord-feature-icon">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <h4 class="discord-feature-title">Canais Temáticos</h4>
+                        <p class="discord-feature-description">Mixiruri.</p>
+                    </div>
+                    <div class="discord-feature">
+                        <div class="discord-feature-icon">
+                            <i class="fas fa-gamepad"></i>
+                        </div>
+                        <h4 class="discord-feature-title">Eventos de Jogos</h4>
+                        <p class="discord-feature-description">Muitas brigas e fofocas com a Choquei Quadrada.</p>
+                    </div>
+                    <div class="discord-feature">
+                        <div class="discord-feature-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h4 class="discord-feature-title">Bots Úteis</h4>
+                        <p class="discord-feature-description">Não temos, tudo inutil...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Minecraft Section -->
+    <section id="minecraft" class="section minecraft-section">
+        <div class="section-inner">
+            <h2 class="section-title">Minecraft</h2>
+            <div class="minecraft-container">
+                <div class="minecraft-info">
+                    <p class="minecraft-description">Explore o mundo de Minecraft com nosso launcher personalizado.
+                        Acesse mods, texturas e ao servidor exclusivo Alexandria com facilidade e segurança.</p>
+                    <a href="https://github.com/reicasquinha/alexandria-launcher/releases/download/v1.0.0/CustomMinecraftLauncher.zip"
+                        class="cta-button cta-button-primary-roxo">Baixar Launcher</a>
+                </div>
+                <div class="minecraft-features">
+                    <div class="minecraft-feature">
+                        <div class="minecraft-feature-icon">
+                            <i class="fas fa-puzzle-piece"></i>
+                        </div>
+                        <h4 class="minecraft-feature-title">Mods Integrados</h4>
+                        <p class="minecraft-feature-description">Acesso fácil a uma biblioteca de mods populares e
+                            exclusivos.</p>
+                    </div>
+                    <div class="minecraft-feature">
+                        <div class="minecraft-feature-icon">
+                            <i class="fas fa-server"></i>
+                        </div>
+                        <h4 class="minecraft-feature-title">Servidores Exclusivos</h4>
+                        <p class="minecraft-feature-description">Conecte-se a ao servidor exclusivo Alexandria com
+                            comunidade
+                            ativa e eventos especiais.</p>
+                    </div>
+                    <div class="minecraft-feature">
+                        <div class="minecraft-feature-icon">
+                            <i class="fas fa-paint-brush"></i>
+                        </div>
+                        <h4 class="minecraft-feature-title">Pacotes de Texturas</h4>
+                        <p class="minecraft-feature-description">Personalize sua experiência com pacotes de texturas de
+                            alta qualidade.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Steam Section -->
+    <section id="steam" class="section steam-section">
+        <div class="section-inner">
+            <h2 class="section-title">Steam</h2>
+            <div class="steam-container">
+                <div class="steam-info">
+                    <p class="steam-description">Confira meu perfil na Steam, jogos favoritos, conquistas e
+                        estatísticas. Adicione-me como amigo para jogarmos juntos!</p>
+                    <a href="https://steamcommunity.com/id/calistoz/" target="_blank"
+                        class="cta-button cta-button-primary">Ver Perfil Completo</a>
+                </div>
+                <div class="steam-stats">
+                    <div class="steam-stat">
+                        <div class="steam-stat-number">75+</div>
+                        <div class="steam-stat-label">Jogos</div>
+                    </div>
+                    <div class="steam-stat">
+                        <div class="steam-stat-number">3000+</div>
+                        <div class="steam-stat-label">Horas Jogadas</div>
+                    </div>
+                    <div class="steam-stat">
+                        <div class="steam-stat-number">9817+</div>
+                        <div class="steam-stat-label">Conquistas</div>
+                    </div>
+                    <div class="steam-stat">
+                        <div class="steam-stat-number">60+</div>
+                        <div class="steam-stat-label">Amigos</div>
+                    </div>
+                </div>
+                <div class="steam-games">
+                    <div class="steam-game">
+                        <img src="https://cdn5.idcgames.com/storage/image/1155/love-ascended-2025/default.jpg"
+                            alt="CS:GO" class="steam-game-image">
+                        <div class="steam-game-info">
+                            <div class="steam-game-title">Ark Survival Ascended</div>
+                            <div class="steam-game-hours">600+ Horas</div>
+                        </div>
+                    </div>
+                    <div class="steam-game">
+                        <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/271590/header.jpg" alt="GTA V"
+                            class="steam-game-image">
+                        <div class="steam-game-info">
+                            <div class="steam-game-title">Grand Theft Auto V</div>
+                            <div class="steam-game-hours">500+ Horas</div>
+                        </div>
+                    </div>
+                    <div class="steam-game">
+                        <img src="https://i.pinimg.com/736x/9d/c8/4c/9dc84c7cfde98e444f4d7e3345792e8e.jpg" alt="PUBG"
+                            class="steam-game-image">
+                        <div class="steam-game-info">
+                            <div class="steam-game-title">Dead By Daylight</div>
+                            <div class="steam-game-hours">1200+ Horas</div>
+                        </div>
+                    </div>
+                    <div class="steam-game">
+                        <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/1174180/header.jpg"
+                            alt="Red Dead Redemption 2" class="steam-game-image">
+                        <div class="steam-game-info">
+                            <div class="steam-game-title">Red Dead Redemption 2</div>
+                            <div class="steam-game-hours">200+ Horas</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Galeria Section -->
+    <section id="galeria" class="section gallery-section">
+        <div class="section-inner">
+            <h2 class="section-title">Galeria</h2>
+            <div class="gallery-container">
+                <div class="gallery-tabs">
+                    <div class="gallery-tab active" data-category="all">Todas</div>
+                    <div class="gallery-tab" data-category="astraeos">Casa Astraeos Ark</div>
+                    <div class="gallery-tab" data-category="thecenter">Casa The Center Ark</div>
+                    <div class="gallery-tab" data-category="theisland">Casa The Island Ark</div>
+                </div>
+                <div class="gallery-grid" id="gallery-grid">
+                    <!-- Imagens serão carregadas via JavaScript -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal da Galeria -->
+    <div class="gallery-modal" id="gallery-modal">
+        <div class="gallery-modal-content">
+            <img src="" alt="Imagem ampliada" class="gallery-modal-image" id="modal-image">
+            <button class="gallery-modal-close" id="modal-close">&times;</button>
+            <div class="gallery-modal-nav">
+                <button id="modal-prev">&lt;</button>
+                <button id="modal-next">&gt;</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">ALEXANDRIA</div>
+            <p>Portal pessoal de Alexandre</p>
+            <div class="footer-links">
+                <a href="#discord" class="footer-link">Discord</a>
+                <a href="#minecraft" class="footer-link">Minecraft</a>
+                <a href="#steam" class="footer-link">Steam</a>
+                <a href="#galeria" class="footer-link">Galeria</a>
+            </div>
+            <div class="footer-social">
+                <a href="https://discord.gg/r8bBjkuf" target="_blank" class="social-icon"><i
+                        class="fab fa-discord"></i></a>
+                <a href="https://steamcommunity.com/id/calistoz/" target="_blank" class="social-icon"><i
+                        class="fab fa-steam"></i></a>
+            </div>
+            <div class="footer-copyright">
+                &copy; 2025 Alexandria. Todos os direitos reservados.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+    <script src="button-animation.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,97 @@
+/* Estilos para o botão animado */
+.animated-button {
+    position: relative;
+    overflow: hidden;
+}
+
+.sparkle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: white;
+    box-shadow: 0 0 8px 2px rgba(255, 255, 255, 0.8);
+    opacity: 0;
+    z-index: 3;
+    pointer-events: none;
+}
+
+.gradient-border {
+    position: absolute;
+    opacity: 0;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.top-gradient,
+.bottom-gradient {
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(255, 0, 255, 0), rgba(255, 0, 255, 0.7), rgba(255, 0, 255, 0));
+}
+
+.top-gradient {
+    top: 0;
+}
+
+.bottom-gradient {
+    bottom: 0;
+}
+
+.left-gradient,
+.right-gradient {
+    top: 0;
+    height: 100%;
+    width: 2px;
+    background: linear-gradient(180deg, rgba(255, 0, 255, 0), rgba(255, 0, 255, 0.7), rgba(255, 0, 255, 0));
+}
+
+.left-gradient {
+    left: 0;
+}
+
+.right-gradient {
+    right: 0;
+}
+
+@keyframes sparkleAnimation {
+    0% {
+        opacity: 0;
+        transform: scale(0);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.5);
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(0);
+    }
+}
+
+@keyframes gradientAnimation {
+    0% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes gradientMove {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    100% {
+        background-position: 100% 50%;
+    }
+}
